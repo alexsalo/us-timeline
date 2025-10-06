@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1770-1870 US Political & Military Timeline</title>
+    <title>1706-1870 US Political & Military Timeline</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for visualization contrast and design */
@@ -11,11 +11,13 @@
             font-family: 'Inter', sans-serif;
             background-color: #1a1a2e; /* Deep purple/blue background */
             color: #e0e0e0; /* Light text */
+            overflow-x: auto; /* ADDED: Enables horizontal scrolling */
         }
         .timeline-container {
             position: relative;
             padding: 2rem 1rem;
             max-width: 1800px; /* Increased width */
+            min-width: 1200px; /* NEW: Ensures the content pushes past the viewport for scrolling */
             margin: auto;
         }
         .figure-row {
@@ -37,6 +39,7 @@
             opacity: 0.8;
             transition: opacity 0.2s, transform 0.2s;
         }
+
         .active-bar {
             position: absolute;
             height: 20px;
@@ -59,7 +62,6 @@
         .event-marker {
             position: absolute;
             width: 2px;
-            /* Event markers need 100% of their parent container height */
             height: 100%; 
             background-color: #f7d08a; /* Gold color */
             z-index: 5;
@@ -88,6 +90,22 @@
             line-height: 1.2;
             color: #b0b0b0;
         }
+        /* Styling for the dynamically placed decade markers */
+        .decade-label {
+            position: absolute;
+            font-size: 0.75rem;
+            line-height: 1;
+            transform: translateX(-50%);
+            color: #9ca3af; /* Gray-400 */
+        }
+        .decade-tick {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 8px; /* Small tick mark above the label */
+            background-color: #4b5563; /* Gray-600 */
+            transform: translateX(-50%);
+        }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -108,8 +126,8 @@
 </head>
 <body class="min-h-screen">
     <div class="p-4 sm:p-8">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-1 text-white">US Leaders: Political and Military Timeline (1770–1870)</h1>
-        <p class="text-center text-sm mb-8 text-gray-400">Key Events, Lifespans, and Active Periods of American Political and Military Figures.</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-1 text-white">US Leaders: Political and Military Timeline (1706–1870)</h1>
+        <p class="text-center text-sm mb-8 text-gray-400">Key Events, Lifespans (starting at 1706), and Active Periods of American Political and Military Figures.</p>
 
         <div class="timeline-container bg-[#262640] rounded-xl shadow-2xl p-4">
 
@@ -125,7 +143,7 @@
                     <!-- Timeline Space (Col 9) - This is where the markers go -->
                     <div class="col-span-9 relative">
                         <div id="event-markers-container" class="absolute inset-x-0 bottom-0 h-full">
-                            <!-- Markers will be inserted here (relative to col-span-9 width) -->
+                            <!-- Event Markers will be inserted here -->
                         </div>
                     </div>
                 </div>
@@ -135,19 +153,9 @@
                     <!-- Spacer for Figure Names (Col 3) -->
                     <div class="col-span-3"></div> 
 
-                    <!-- Aligned Labels (Col 9) -->
-                    <div class="col-span-9 flex justify-between text-xs font-mono text-gray-400">
-                        <span class="p-1 -ml-2">1770</span>
-                        <span>1780</span>
-                        <span>1790</span>
-                        <span>1800</span>
-                        <span>1810</span>
-                        <span>1820</span>
-                        <span>1830</span>
-                        <span>1840</span>
-                        <span>1850</span>
-                        <span>1860</span>
-                        <span class="p-1 -mr-2">1870</span>
+                    <!-- Aligned Labels (Col 9) - Content will be dynamically injected for accuracy -->
+                    <div class="col-span-9 relative" id="axis-labels-container">
+                        <!-- Labels (1770, 1780, etc.) will be dynamically inserted here -->
                     </div>
                 </div>
             </div>
@@ -170,15 +178,15 @@
     <script type="module">
         // --- Configuration and Data ---
 
-        const START_YEAR = 1770;
+        const START_YEAR = 1706; // Earliest birth year (Franklin)
         const END_YEAR = 1870;
-        const DURATION = END_YEAR - START_YEAR; // 100 years
+        const DURATION = END_YEAR - START_YEAR; // 164 years (1870 - 1706)
 
         // Helper function to map a year to a percentage position on the timeline
         function yearToPercentage(year) {
-            if (year < START_YEAR) return 0;
-            if (year > END_YEAR) return 100;
-            return ((year - START_YEAR) / DURATION) * 100;
+            // Clip year to the visualization range (1706-1870)
+            const clippedYear = Math.max(START_YEAR, Math.min(END_YEAR, year));
+            return ((clippedYear - START_YEAR) / DURATION) * 100;
         }
 
         // Data for Key US Historical Events (~30)
@@ -256,9 +264,31 @@
         const colors = {
             Political: { life: 'bg-indigo-600', active: 'bg-indigo-400' },
             Military: { life: 'bg-red-600', active: 'bg-red-400' },
-            // Only Political and Military are used
         };
 
+
+        function renderAxisLabels() {
+            const container = document.getElementById('axis-labels-container');
+            container.innerHTML = '';
+            
+            // Start labels at 1770 and go up to 1870, calculated from the 1706 START_YEAR
+            for (let year = 1770; year <= END_YEAR; year += 10) {
+                const left = yearToPercentage(year);
+                
+                // Decade Label
+                const label = document.createElement('span');
+                label.className = 'decade-label top-2'; // Tailwind classes are replaced by CSS to ensure correct positioning
+                label.style.left = `${left}%`;
+                label.textContent = year;
+                container.appendChild(label);
+
+                // Subtle vertical dashed line (tick) for the axis mark
+                const tick = document.createElement('div');
+                tick.className = 'decade-tick h-full';
+                tick.style.left = `${left}%`;
+                container.appendChild(tick);
+            }
+        }
 
         function renderEventTimeline() {
             const container = document.getElementById('event-markers-container');
@@ -305,7 +335,7 @@
                 nameSpan.className = 'figure-name font-semibold text-sm truncate';
                 nameSpan.textContent = figure.name;
 
-                // Dates
+                // Dates (Shows full birth/death range)
                 const datesSpan = document.createElement('span');
                 datesSpan.className = 'text-xs text-gray-500';
                 datesSpan.textContent = `(${figure.birth} - ${figure.death}) - ${figure.category}`;
@@ -328,19 +358,25 @@
                 const figureColors = colors[figure.category] || colors.Political; // Default to Political if category is missing
 
                 // 1. Life Span Bar (Background)
+                
+                // Calculate position based on the true birth and death years
                 const lifeStart = yearToPercentage(figure.birth);
                 const lifeEnd = yearToPercentage(figure.death);
                 const lifeWidth = lifeEnd - lifeStart;
 
+                let lifeBarClasses = `time-bar ${figureColors.life}`;
+                
+                // The 'clipped-left' class is no longer needed as the axis is expanded
+                
                 const lifeBar = document.createElement('div');
-                lifeBar.className = `time-bar ${figureColors.life}`;
+                lifeBar.className = lifeBarClasses;
                 lifeBar.style.left = `${lifeStart}%`;
                 lifeBar.style.width = `${lifeWidth}%`;
                 lifeBar.setAttribute('title', `Life Span: ${figure.birth} - ${figure.death}`);
                 timelineCol.appendChild(lifeBar);
 
                 // 2. Active Period Bar (Foreground)
-                // Ensure active period is within the visualization range (1770-1870)
+                // Active period is still clipped to the START_YEAR (1706) and END_YEAR (1870)
                 const displayActiveStart = Math.max(figure.activeStart, START_YEAR);
                 const displayActiveEnd = Math.min(figure.activeEnd, END_YEAR);
 
@@ -370,6 +406,7 @@
 
         // --- Initialization ---
         window.onload = () => {
+            renderAxisLabels();
             renderEventTimeline();
             renderFiguresTimeline();
         };
