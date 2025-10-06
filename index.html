@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1706-1870 US Political & Military Timeline</title>
+    <title>1706-1893 US Political & Military Timeline</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for visualization contrast and design */
@@ -126,7 +126,7 @@
 </head>
 <body class="min-h-screen">
     <div class="p-4 sm:p-8">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-1 text-white">US Leaders: Political and Military Timeline (1706–1870)</h1>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-1 text-white">US Leaders: Political and Military Timeline (1706–1893)</h1>
         <p class="text-center text-sm mb-8 text-gray-400">Key Events, Lifespans (starting at 1706), and Active Periods of American Political and Military Figures.</p>
 
         <div class="timeline-container bg-[#262640] rounded-xl shadow-2xl p-4">
@@ -148,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- Time Axis Labels (1770-1870) are now also aligned using the grid -->
+                <!-- Time Axis Labels (1770-1893) are now also aligned using the grid -->
                 <div class="grid grid-cols-12 gap-2 absolute inset-x-0 top-10 h-4">
                     <!-- Spacer for Figure Names (Col 3) -->
                     <div class="col-span-3"></div> 
@@ -179,17 +179,18 @@
         // --- Configuration and Data ---
 
         const START_YEAR = 1706; // Earliest birth year (Franklin)
-        const END_YEAR = 1870;
-        const DURATION = END_YEAR - START_YEAR; // 164 years (1870 - 1706)
+        const END_YEAR = 1893; // UPDATED: Latest death year (Hayes)
+        const DURATION = END_YEAR - START_YEAR; // 187 years (1893 - 1706)
 
         // Helper function to map a year to a percentage position on the timeline
         function yearToPercentage(year) {
-            // Clip year to the visualization range (1706-1870)
+            // Clip year to the visualization range (1706-1893)
             const clippedYear = Math.max(START_YEAR, Math.min(END_YEAR, year));
             return ((clippedYear - START_YEAR) / DURATION) * 100;
         }
 
         // Data for Key US Historical Events (~30)
+        // Note: Events stop at 1870, but the timeline extends to 1893.
         const EVENTS = [
             { year: 1776, name: "Declaration of Independence" },
             { year: 1783, name: "Treaty of Paris (US Independence)" },
@@ -271,13 +272,13 @@
             const container = document.getElementById('axis-labels-container');
             container.innerHTML = '';
             
-            // Start labels at 1770 and go up to 1870, calculated from the 1706 START_YEAR
+            // Start labels at 1770 and go up to the new END_YEAR (1893), using 10-year intervals
             for (let year = 1770; year <= END_YEAR; year += 10) {
                 const left = yearToPercentage(year);
                 
                 // Decade Label
                 const label = document.createElement('span');
-                label.className = 'decade-label top-2'; // Tailwind classes are replaced by CSS to ensure correct positioning
+                label.className = 'decade-label top-2'; 
                 label.style.left = `${left}%`;
                 label.textContent = year;
                 container.appendChild(label);
@@ -366,8 +367,6 @@
 
                 let lifeBarClasses = `time-bar ${figureColors.life}`;
                 
-                // The 'clipped-left' class is no longer needed as the axis is expanded
-                
                 const lifeBar = document.createElement('div');
                 lifeBar.className = lifeBarClasses;
                 lifeBar.style.left = `${lifeStart}%`;
@@ -376,7 +375,7 @@
                 timelineCol.appendChild(lifeBar);
 
                 // 2. Active Period Bar (Foreground)
-                // Active period is still clipped to the START_YEAR (1706) and END_YEAR (1870)
+                // Active period is still clipped to the START_YEAR (1706) and END_YEAR (1893)
                 const displayActiveStart = Math.max(figure.activeStart, START_YEAR);
                 const displayActiveEnd = Math.min(figure.activeEnd, END_YEAR);
 
