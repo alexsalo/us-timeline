@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1770-1870 US Political & Military Timeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for visualization contrast and design */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Deep purple/blue background */
+            color: #e0e0e0; /* Light text */
+        }
+        .timeline-container {
+            position: relative;
+            padding: 2rem 1rem;
+            max-width: 1800px; /* Increased width */
+            margin: auto;
+        }
+        .figure-row {
+            min-height: 48px; /* Space for each figure row */
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .figure-row:last-child {
+            border-bottom: none;
+        }
+        .time-bar {
+            position: absolute;
+            height: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9999px; /* Full rounded corners */
+            opacity: 0.8;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .active-bar {
+            position: absolute;
+            height: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9999px;
+            z-index: 10;
+            opacity: 0.95;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Glow effect for active period */
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .figure-row:hover .time-bar,
+        .figure-row:hover .active-bar {
+            opacity: 1;
+            transform: translateY(-50%) scaleY(1.1); /* Slight lift on hover */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Event marker styling */
+        .event-marker {
+            position: absolute;
+            width: 2px;
+            /* Event markers need 100% of their parent container height */
+            height: 100%; 
+            background-color: #f7d08a; /* Gold color */
+            z-index: 5;
+        }
+        
+        /* Vertical Label Styling */
+        .event-label {
+            position: absolute;
+            top: 80%; 
+            width: 150px;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1;
+            /* Rotate to -90 degrees (fully vertical, reading up the line) */
+            transform: translateX(-50%) rotate(-90deg);
+            transform-origin: top center;
+            color: #f7d08a;
+            font-weight: 500;
+            /* Offset to move text away from the line */
+            margin-left: 10px; 
+            /* Ensure the combined text stays on one line after rotation */
+            white-space: nowrap; 
+        }
+        .figure-summary {
+            font-size: 0.65rem; /* Smaller font for the summary sentence */
+            line-height: 1.2;
+            color: #b0b0b0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .figure-name {
+                font-size: 0.875rem;
+            }
+            .figure-summary {
+                font-size: 0.6rem;
+            }
+            .time-bar {
+                height: 8px;
+            }
+            .active-bar {
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="p-4 sm:p-8">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-1 text-white">US Leaders: Political and Military Timeline (1770–1870)</h1>
+        <p class="text-center text-sm mb-8 text-gray-400">Key Events, Lifespans, and Active Periods of American Political and Military Figures.</p>
+
+        <div class="timeline-container bg-[#262640] rounded-xl shadow-2xl p-4">
+
+            <!-- Global Time Axis for Events (Height increased to h-48) -->
+            <div id="event-timeline" class="relative h-48 mb-10 border-b-2 border-dashed border-gray-600">
+                <h2 class="text-lg font-semibold mb-2 text-white">US Events Timeline</h2>
+                
+                <!-- ALIGNMENT FIX: New grid structure to align event timeline with figures -->
+                <div class="grid grid-cols-12 gap-2 absolute inset-x-0 bottom-0 h-40">
+                    <!-- Spacer for Figure Names (Col 3) -->
+                    <div class="col-span-3"></div> 
+
+                    <!-- Timeline Space (Col 9) - This is where the markers go -->
+                    <div class="col-span-9 relative">
+                        <div id="event-markers-container" class="absolute inset-x-0 bottom-0 h-full">
+                            <!-- Markers will be inserted here (relative to col-span-9 width) -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Axis Labels (1770-1870) are now also aligned using the grid -->
+                <div class="grid grid-cols-12 gap-2 absolute inset-x-0 top-10 h-4">
+                    <!-- Spacer for Figure Names (Col 3) -->
+                    <div class="col-span-3"></div> 
+
+                    <!-- Aligned Labels (Col 9) -->
+                    <div class="col-span-9 flex justify-between text-xs font-mono text-gray-400">
+                        <span class="p-1 -ml-2">1770</span>
+                        <span>1780</span>
+                        <span>1790</span>
+                        <span>1800</span>
+                        <span>1810</span>
+                        <span>1820</span>
+                        <span>1830</span>
+                        <span>1840</span>
+                        <span>1850</span>
+                        <span>1860</span>
+                        <span class="p-1 -mr-2">1870</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Figures Timeline -->
+            <div id="figures-timeline">
+                <h2 class="text-lg font-semibold mb-4 text-white">Historical Figures: Life Spans & Active Periods</h2>
+                <div class="grid grid-cols-12 gap-2 text-xs font-bold uppercase text-gray-400 border-b border-gray-700 pb-2 mb-2">
+                    <span class="col-span-3">Figure & Role Summary</span>
+                    <span class="col-span-9 text-right pr-4">Timeline (Life Span | Active Period)</span>
+                </div>
+                <div id="figures-list">
+                    <!-- Figure rows will be inserted here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        // --- Configuration and Data ---
+
+        const START_YEAR = 1770;
+        const END_YEAR = 1870;
+        const DURATION = END_YEAR - START_YEAR; // 100 years
+
+        // Helper function to map a year to a percentage position on the timeline
+        function yearToPercentage(year) {
+            if (year < START_YEAR) return 0;
+            if (year > END_YEAR) return 100;
+            return ((year - START_YEAR) / DURATION) * 100;
+        }
+
+        // Data for Key US Historical Events (~30)
+        const EVENTS = [
+            { year: 1776, name: "Declaration of Independence" },
+            { year: 1783, name: "Treaty of Paris (US Independence)" },
+            { year: 1787, name: "Constitutional Convention" },
+            { year: 1791, name: "Bill of Rights Ratified" },
+            { year: 1793, name: "Eli Whitney invents Cotton Gin" },
+            { year: 1803, name: "Louisiana Purchase" },
+            { year: 1803, name: "Marbury v. Madison Ruling" },
+            { year: 1807, name: "Act Prohibiting Importation of Slaves" },
+            { year: 1812, name: "War of 1812 Begins" },
+            { year: 1815, name: "Battle of New Orleans" },
+            { year: 1820, name: "Missouri Compromise" },
+            { year: 1823, name: "Monroe Doctrine Declared" },
+            { year: 1825, name: "Erie Canal Opens" },
+            { year: 1830, name: "Indian Removal Act" },
+            { year: 1838, name: "Trail of Tears" },
+            { year: 1845, name: "Texas Annexation" },
+            { year: 1846, name: "Mexican-American War Begins" },
+            { year: 1848, name: "Seneca Falls Convention" },
+            { year: 1849, name: "California Gold Rush Peak" },
+            { year: 1850, name: "Compromise of 1850" },
+            { year: 1853, name: "Commodore Perry in Japan" },
+            { year: 1854, name: "Kansas-Nebraska Act" },
+            { year: 1857, name: "Dred Scott v. Sandford" },
+            { year: 1859, name: "John Brown's Raid on Harpers Ferry" },
+            { year: 1861, name: "American Civil War Begins" },
+            { year: 1862, name: "Homestead Act Passed" },
+            { year: 1863, name: "Emancipation Proclamation" },
+            { year: 1865, name: "Civil War Ends; Lincoln Assassinated" },
+            { year: 1867, name: "Reconstruction Acts Passed" },
+            { year: 1868, name: "14th Amendment Ratified" },
+            { year: 1869, name: "Transcontinental Railroad Completed" },
+            { year: 1870, name: "15th Amendment Ratified" }
+        ];
+
+        // Data for US Political and Military Figures (~30)
+        const FIGURES = [
+            { name: "Benjamin Franklin", birth: 1706, death: 1790, activeStart: 1770, activeEnd: 1788, category: "Political", summary: "A Founding Father who negotiated the Treaty of Paris and secured crucial French support for the Revolution." },
+            { name: "George Washington", birth: 1732, death: 1799, activeStart: 1775, activeEnd: 1797, category: "Political", summary: "Commander-in-Chief of the Continental Army and the first President of the United States." },
+            { name: "John Adams", birth: 1735, death: 1826, activeStart: 1776, activeEnd: 1801, category: "Political", summary: "A key diplomat during the Revolution and the second President of the United States." },
+            { name: "James Monroe", birth: 1758, death: 1831, activeStart: 1794, activeEnd: 1825, category: "Political", summary: "The fifth U.S. President, famous for proclaiming the anti-European colonization policy known as the Monroe Doctrine." },
+            { name: "Thomas Jefferson", birth: 1743, death: 1826, activeStart: 1776, activeEnd: 1809, category: "Political", summary: "Principal author of the Declaration of Independence and the third President, known for the Louisiana Purchase." },
+            { name: "James Madison", birth: 1751, death: 1836, activeStart: 1787, activeEnd: 1817, category: "Political", summary: "Known as the 'Father of the Constitution' and served as the fourth President during the War of 1812." },
+            { name: "John Marshall", birth: 1755, death: 1835, activeStart: 1801, activeEnd: 1835, category: "Political", summary: "The longest-serving Chief Justice of the Supreme Court, establishing the principle of judicial review." },
+            { name: "Alexander Hamilton", birth: 1757, death: 1804, activeStart: 1787, activeEnd: 1800, category: "Political", summary: "First Secretary of the Treasury and founder of the nation's financial system and the Federalist Party." },
+            { name: "John Quincy Adams", birth: 1767, death: 1848, activeStart: 1817, activeEnd: 1848, category: "Political", summary: "A distinguished diplomat, sixth U.S. President, and later an abolitionist congressman." },
+            { name: "Tecumseh", birth: 1768, death: 1813, activeStart: 1795, activeEnd: 1813, category: "Military", summary: "A Shawnee warrior and chief who organized a large confederacy of tribes to oppose U.S. expansion." },
+            { name: "Andrew Jackson", birth: 1767, death: 1845, activeStart: 1815, activeEnd: 1837, category: "Political", summary: "Victor of the Battle of New Orleans and the seventh President, known for championing 'common man' democracy." },
+            { name: "Henry Clay", birth: 1777, death: 1852, activeStart: 1810, activeEnd: 1850, category: "Political", summary: "The 'Great Compromiser,' he brokered the Missouri Compromise and the Compromise of 1850 to defuse sectional crises." },
+            { name: "John C. Calhoun", birth: 1782, death: 1850, activeStart: 1812, activeEnd: 1850, category: "Political", summary: "A major proponent of slavery, states' rights, and nullification, serving as Vice President and Secretary of State." },
+            { name: "Daniel Webster", birth: 1782, death: 1852, activeStart: 1813, activeEnd: 1852, category: "Political", summary: "A leading nationalist and orator in the Senate who fiercely opposed nullification and secession." },
+            { name: "Martin Van Buren", birth: 1782, death: 1862, activeStart: 1821, activeEnd: 1840, category: "Political", summary: "The eighth U.S. President who faced an economic crisis during his term, known as the Panic of 1837." },
+            { name: "Zachary Taylor", birth: 1784, death: 1850, activeStart: 1846, activeEnd: 1850, category: "Military", summary: "A career officer and national war hero from the Mexican-American War who served briefly as the 12th President." },
+            { name: "Winfield Scott", birth: 1786, death: 1866, activeStart: 1812, activeEnd: 1861, category: "Military", summary: "Long-serving General-in-Chief of the U.S. Army, leading forces in the Mexican-American War and proposing the Anaconda Plan." },
+            { name: "Sam Houston", birth: 1793, death: 1863, activeStart: 1836, activeEnd: 1861, category: "Military", summary: "A soldier and statesman who led the Texas Revolution and served as the first president of the Republic of Texas." },
+            { name: "James K. Polk", birth: 1795, death: 1849, activeStart: 1839, activeEnd: 1849, category: "Political", summary: "The 11th President who committed to Manifest Destiny, achieving massive territorial expansion through the Mexican-American War." },
+            { name: "Millard Fillmore", birth: 1800, death: 1874, activeStart: 1849, activeEnd: 1853, category: "Political", summary: "The 13th President who signed the Compromise of 1850, including the controversial Fugitive Slave Act, into law." },
+            { name: "Franklin Pierce", birth: 1804, death: 1869, activeStart: 1853, activeEnd: 1857, category: "Political", summary: "The 14th President whose support for the Kansas-Nebraska Act exacerbated sectional conflicts over slavery." },
+            { name: "Robert E. Lee", birth: 1807, death: 1870, activeStart: 1861, activeEnd: 1865, category: "Military", summary: "The esteemed commander of the Confederate States Army, known for his tactical brilliance during the Civil War." },
+            { name: "Jefferson Davis", birth: 1808, death: 1889, activeStart: 1847, activeEnd: 1865, category: "Political", summary: "A former U.S. Senator and Secretary of War who served as the first and only President of the Confederate States of America." },
+            { name: "Abraham Lincoln", birth: 1809, death: 1865, activeStart: 1858, activeEnd: 1865, category: "Political", summary: "The 16th President who led the nation through the Civil War and issued the Emancipation Proclamation." },
+            { name: "Stephen Douglas", birth: 1813, death: 1861, activeStart: 1843, activeEnd: 1861, category: "Political", summary: "Illinois Senator and proponent of 'popular sovereignty' who famously debated Abraham Lincoln on the issue of slavery." },
+            { name: "William T. Sherman", birth: 1820, death: 1891, activeStart: 1861, activeEnd: 1870, category: "Military", summary: "A Union General known for his aggressive strategies, including the devastating 'March to the Sea' across the South." },
+            { name: "Ulysses S. Grant", birth: 1822, death: 1885, activeStart: 1861, activeEnd: 1870, category: "Military", summary: "The Commanding General of the Union Army who secured victory in the Civil War, later serving as the 18th U.S. President." },
+            { name: "Stonewall Jackson", birth: 1824, death: 1863, activeStart: 1861, activeEnd: 1863, category: "Military", summary: "A brilliant Confederate general who was Robert E. Lee's most effective subordinate until his fatal wounding in 1863." },
+            { name: "Rutherford B. Hayes", birth: 1822, death: 1893, activeStart: 1865, activeEnd: 1870, category: "Political", summary: "A Union General and post-Civil War Ohio Governor who would later become the 19th U.S. President." },
+            { name: "Andrew Johnson", birth: 1808, death: 1875, activeStart: 1862, activeEnd: 1869, category: "Political", summary: "Lincoln's Vice President who took over as the 17th President and was impeached by the House for his Reconstruction policies." }
+        ];
+
+        // --- Rendering Logic ---
+
+        const colors = {
+            Political: { life: 'bg-indigo-600', active: 'bg-indigo-400' },
+            Military: { life: 'bg-red-600', active: 'bg-red-400' },
+            // Only Political and Military are used
+        };
+
+
+        function renderEventTimeline() {
+            const container = document.getElementById('event-markers-container');
+
+            // Clear existing markers if re-rendering
+            container.innerHTML = '';
+
+            EVENTS.forEach(event => {
+                const left = yearToPercentage(event.year);
+
+                // Event Marker Line
+                const marker = document.createElement('div');
+                marker.className = 'event-marker';
+                marker.style.left = `${left}%`;
+                marker.setAttribute('title', `${event.year}: ${event.name}`); // Tooltip for event
+                container.appendChild(marker);
+
+                // Event Label
+                const label = document.createElement('div');
+                label.className = 'event-label';
+                label.style.left = `${left}%`;
+                // Combined text for single-line vertical read
+                label.innerHTML = `<span class="whitespace-nowrap">${event.year} — ${event.name}</span>`;
+                container.appendChild(label);
+            });
+        }
+
+        function renderFiguresTimeline() {
+            const listContainer = document.getElementById('figures-list');
+
+            // Clear existing figures if re-rendering
+            listContainer.innerHTML = '';
+
+            FIGURES.forEach(figure => {
+                const figureRow = document.createElement('div');
+                figureRow.className = 'figure-row grid grid-cols-12 items-center hover:bg-[#343452] transition-colors duration-200 cursor-default rounded-lg';
+
+                // --- Figure Name, Dates, and Summary Column (Col 1-3) ---
+                const nameCol = document.createElement('div');
+                nameCol.className = 'col-span-3 pr-2 flex flex-col justify-center';
+
+                // Name
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'figure-name font-semibold text-sm truncate';
+                nameSpan.textContent = figure.name;
+
+                // Dates
+                const datesSpan = document.createElement('span');
+                datesSpan.className = 'text-xs text-gray-500';
+                datesSpan.textContent = `(${figure.birth} - ${figure.death}) - ${figure.category}`;
+
+                // Summary
+                const summarySpan = document.createElement('span');
+                summarySpan.className = 'figure-summary italic mt-1';
+                summarySpan.textContent = figure.summary;
+
+
+                nameCol.appendChild(nameSpan);
+                nameCol.appendChild(datesSpan);
+                nameCol.appendChild(summarySpan);
+                figureRow.appendChild(nameCol);
+
+                // --- Timeline Visualization Column (Col 4-12) ---
+                const timelineCol = document.createElement('div');
+                timelineCol.className = 'col-span-9 relative h-10 w-full';
+
+                const figureColors = colors[figure.category] || colors.Political; // Default to Political if category is missing
+
+                // 1. Life Span Bar (Background)
+                const lifeStart = yearToPercentage(figure.birth);
+                const lifeEnd = yearToPercentage(figure.death);
+                const lifeWidth = lifeEnd - lifeStart;
+
+                const lifeBar = document.createElement('div');
+                lifeBar.className = `time-bar ${figureColors.life}`;
+                lifeBar.style.left = `${lifeStart}%`;
+                lifeBar.style.width = `${lifeWidth}%`;
+                lifeBar.setAttribute('title', `Life Span: ${figure.birth} - ${figure.death}`);
+                timelineCol.appendChild(lifeBar);
+
+                // 2. Active Period Bar (Foreground)
+                // Ensure active period is within the visualization range (1770-1870)
+                const displayActiveStart = Math.max(figure.activeStart, START_YEAR);
+                const displayActiveEnd = Math.min(figure.activeEnd, END_YEAR);
+
+                // Calculate the visible duration (in years)
+                const displayActiveDuration = displayActiveEnd - displayActiveStart;
+
+
+                if (displayActiveDuration > 0) { // Only render if there is a visible active period
+                    const activeBar = document.createElement('div');
+                    activeBar.className = `active-bar ${figureColors.active}`;
+                    
+                    // Calculate bar position and width based on clipped years (in percentage)
+                    const barLeft = yearToPercentage(displayActiveStart);
+                    const barWidth = yearToPercentage(displayActiveEnd) - barLeft;
+
+                    activeBar.style.left = `${barLeft}%`;
+                    activeBar.style.width = `${barWidth}%`;
+                    
+                    activeBar.setAttribute('title', `Active Period: ${figure.activeStart} - ${figure.activeEnd}`);
+                    timelineCol.appendChild(activeBar);
+                }
+
+                figureRow.appendChild(timelineCol);
+                listContainer.appendChild(figureRow);
+            });
+        }
+
+        // --- Initialization ---
+        window.onload = () => {
+            renderEventTimeline();
+            renderFiguresTimeline();
+        };
+
+    </script>
+</body>
+</html>
